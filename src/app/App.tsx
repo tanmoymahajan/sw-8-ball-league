@@ -55,10 +55,6 @@ function AppInner() {
                     <KnockoutPage />
                 </main>
             )}
-
-            <footer className="footer">
-                Stored locally on this device (localStorage). Admin required to edit.
-            </footer>
         </div>
     );
 }
