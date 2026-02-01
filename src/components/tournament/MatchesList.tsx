@@ -1,7 +1,11 @@
 import React from "react";
 import type { Match, Player } from "../../domain/tournament/types";
 
-function label(p1: Player | undefined, p2: Player | undefined, m: Match): string {
+function label(
+    p1: Player | undefined,
+    p2: Player | undefined,
+    m: Match
+): React.ReactNode {   // ✅ must NOT be string
     const a = p1?.name ?? "P1";
     const b = p2?.name ?? "P2";
 
@@ -12,7 +16,16 @@ function label(p1: Player | undefined, p2: Player | undefined, m: Match): string
     const winnerName = m.winnerId === m.p1Id ? a : b;
     const loserName = m.winnerId === m.p1Id ? b : a;
 
-    return `${winnerName} beat ${loserName} — ${loserName} remaining: ${m.loserRemaining}`;
+    return (
+        <>
+            <div>
+                <strong>{winnerName}</strong><span className="muted"> beat {loserName}</span>
+            </div>
+            <div className="muted">
+                Opponent balls remaining: {m.loserRemaining}
+            </div>
+        </>
+    );
 }
 
 export function MatchesList({
