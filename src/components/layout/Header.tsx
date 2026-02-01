@@ -25,8 +25,8 @@ export function Header() {
                 src={logo}
                 alt="League logo"
                 style={{
-                    height: 72,
-                    width: 72,
+                    height: 150,
+                    width: 150,
                     objectFit: "cover",
                     borderRadius: 10,
                     marginTop: 6,
