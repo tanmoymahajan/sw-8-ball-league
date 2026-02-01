@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
+const ADMIN_PIN = "11431"; // ✅ UI-only gate (database security is still Edge Function)
 const LS_ADMIN_KEY = "eightball_admin_unlocked_v2";
 const SS_ADMIN_PIN_KEY = "eightball_admin_pin_v1";
 
@@ -29,6 +30,15 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         }
     });
 
+    // ✅ If someone has isAdmin persisted but no valid pin in session, force view-only.
+    useEffect(() => {
+        if (isAdmin && adminPin !== ADMIN_PIN) {
+            setIsAdmin(false);
+            setAdminPin(null);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     // Persist admin unlocked flag
     useEffect(() => {
         try {
@@ -53,14 +63,11 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
             isAdmin,
             adminPin,
 
-            // IMPORTANT:
-            // We do NOT validate the pin here anymore for "real security".
-            // The backend Edge Function will validate the pin on every save.
-            // Here we just set isAdmin=true if user enters something non-empty.
-            // If you still want local validation, you can keep it (but it’s not secure anyway).
+            // ✅ UI gate: only correct pin unlocks admin mode
             login: (pin: string) => {
                 const trimmed = pin.trim();
-                if (!trimmed) return false;
+                const ok = trimmed === ADMIN_PIN;
+                if (!ok) return false;
 
                 setIsAdmin(true);
                 setAdminPin(trimmed);
