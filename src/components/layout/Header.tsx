@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAdmin } from "../../app/providers/AdminProvider";
 import { Modal } from "./Modal";
+import logo from "../../assets/logo.jpg";
 
 export function Header({ onReset }: { onReset: () => void }) {
     const { isAdmin, login, logout } = useAdmin();
@@ -10,12 +11,48 @@ export function Header({ onReset }: { onReset: () => void }) {
 
     return (
         <header className="header">
-            <div>
-                <div className="title">Sobha Windsor 8-Baller's League</div>
-                <div className="subtitle">Groups • Round-robin • Win = 2 pts • BM = Ball Margin (Balls a player won by)</div>
+            {/* Logo */}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginBottom: 6,
+                }}
+            >
+                <img
+                    src={logo}
+                    alt="League logo"
+                    style={{
+                        height: 64,
+                        width: 64,
+                        objectFit: "cover",
+                        borderRadius: 8,
+                    }}
+                />
             </div>
 
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
+            {/* Title + subtitle BELOW logo */}
+            <div
+                style={{
+                    textAlign: "center",
+                    marginBottom: 10,
+                }}
+            >
+                <div className="title">Sobha Windsor 8-Baller&apos;s League</div>
+                <div className="subtitle">
+                    Groups • Round-robin • Win = 2 pts • BM = Ball Margin (Balls a player won by)
+                </div>
+            </div>
+
+            {/* Admin button */}
+            <div
+                style={{
+                    display: "flex",
+                    gap: 10,
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                }}
+            >
                 <button className="secondaryBtn" type="button" onClick={() => setOpen(true)}>
                     {isAdmin ? "Admin: ON" : "Admin: OFF"}
                 </button>
