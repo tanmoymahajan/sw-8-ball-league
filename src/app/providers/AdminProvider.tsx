@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-const ADMIN_PIN = "11431"; // ✅ UI-only gate (database security is still Edge Function)
+const ADMIN_PIN = "110431"; // ✅ UI-only gate (database security is still Edge Function)
 const LS_ADMIN_KEY = "eightball_admin_unlocked_v2";
 const SS_ADMIN_PIN_KEY = "eightball_admin_pin_v1";
 
