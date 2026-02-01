@@ -13,7 +13,7 @@ export function StandingsTable({ rows }: { rows: StandingRow[] }) {
                     <th className="th">W</th>
                     <th className="th">L</th>
                     <th className="th">Pts</th>
-                    <th className="th">BD</th>
+                    <th className="th">BM</th>
                 </tr>
                 </thead>
                 <tbody>

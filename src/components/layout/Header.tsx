@@ -12,7 +12,7 @@ export function Header({ onReset }: { onReset: () => void }) {
         <header className="header">
             <div>
                 <div className="title">Sobha Windsor 8-Baller's League</div>
-                <div className="subtitle">Groups • Round-robin • Win = 2 pts • Ball Diff from opponent remaining</div>
+                <div className="subtitle">Groups • Round-robin • Win = 2 pts • BM = Ball Margin (Balls a player won by)</div>
             </div>
 
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>

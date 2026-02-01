@@ -12,7 +12,11 @@ export function computeStandings(players: Player[], matches: Match[], group: Gro
             wins: 0,
             losses: 0,
             points: 0,
+
+            // NOTE: Keeping field name ballDiff to avoid changing types/UI everywhere.
+            // It now represents BALL MARGIN: sum of opponent balls remaining in matches you won.
             ballDiff: 0,
+
             ballsFor: 0,
             ballsAgainst: 0,
         });
@@ -39,27 +43,28 @@ export function computeStandings(players: Player[], matches: Match[], group: Gro
             r1.wins += 1;
             r2.losses += 1;
             r1.points += 2;
+
+            // ✅ BALL MARGIN (winner only)
+            r1.ballDiff += loserRemaining;
+            // loser gets nothing (no negative)
         } else {
             r2.wins += 1;
             r1.losses += 1;
             r2.points += 2;
-        }
 
-        // ball difference effect = opponent balls remaining
-        // winner +loserRemaining, loser -loserRemaining
-        if (winnerIsP1) {
-            r1.ballDiff += loserRemaining;
-            r2.ballDiff -= loserRemaining;
-        } else {
+            // ✅ BALL MARGIN (winner only)
             r2.ballDiff += loserRemaining;
-            r1.ballDiff -= loserRemaining;
+            // loser gets nothing (no negative)
         }
     }
 
     const list = Array.from(rows.values());
     list.sort((a, b) => {
         if (b.points !== a.points) return b.points - a.points;
+
+        // ballDiff now = ballMargin
         if (b.ballDiff !== a.ballDiff) return b.ballDiff - a.ballDiff;
+
         if (b.ballsFor !== a.ballsFor) return b.ballsFor - a.ballsFor;
         return a.name.localeCompare(b.name);
     });
