@@ -19,7 +19,7 @@ function isGroupStageComplete(matches: GroupMatch[]): boolean {
 function recomputeWinners(knockout: SeriesMatch[]): SeriesMatch[] {
     return knockout.map((m) => ({
         ...m,
-        winnerId: computeSeriesWinner(m.format, m.frames, m.tiebreakWinnerId),
+        winnerId: computeSeriesWinner(m.frames),
     }));
 }
 
@@ -125,7 +125,7 @@ export function tournamentReducer(state: TournamentState, action: TournamentActi
             const ko = state.knockout.map((m) => {
                 if (m.id !== action.matchId) return m;
 
-                if (!canAddFrame(m.format, m.frames, m.tiebreakWinnerId)) return m;
+                if (!canAddFrame(m.frames)) return m;
 
                 const nextFrames = [
                     ...m.frames,
