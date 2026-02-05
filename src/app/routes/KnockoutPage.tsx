@@ -10,7 +10,7 @@ import { KnockoutMatchCard } from "../../components/knockout/KnockoutMatchCard";
 import type { Match as GroupMatch } from "../../domain/tournament/types";
 
 function isGroupStageComplete(matches: GroupMatch[]): boolean {
-    return matches.length > 0 && matches.every((m) => m.completed === true);
+    return matches.length > 0 && matches.every((m) => m.completed);
 }
 
 function groupStageProgress(matches: GroupMatch[]): { completed: number; total: number } {
@@ -46,6 +46,7 @@ export function KnockoutPage() {
     const gp = useMemo(() => groupStageProgress(state.matches), [state.matches]);
     const groupsOver = useMemo(() => isGroupStageComplete(state.matches), [state.matches]);
 
+    const s16s = ["S16M1", "S16M2", "S16M3", "S16M4", "S16M5", "S16M6", "S16M7", "S16M8"] as const;
     const qfs = ["QF1", "QF2", "QF3", "QF4"] as const;
     const sfs = ["SF1", "SF2"] as const;
     const finals = ["THIRD", "FINAL"] as const;
@@ -100,7 +101,7 @@ export function KnockoutPage() {
                 }
             >
                 <div className="hint">
-                    QFs: Best of 2 frames + Spot-shot tiebreak (if 1–1). SF/3rd/Final: Best of 3 frames.
+                    Super 16, QFs, SFs, 3rd Place, and Final: All Best of 3 frames.
                 </div>
                 <div className="muted" style={{ marginTop: 6 }}>
                     Group stage progress: {gp.completed}/{gp.total} matches completed.
@@ -112,13 +113,14 @@ export function KnockoutPage() {
                     <div className="muted">
                         {isAdmin
                             ? groupsOver
-                                ? "Tap “Generate from standings” to create the bracket."
+                                ? "Tap \"Generate from standings\" to create the bracket."
                                 : "Complete all group matches to enable bracket generation."
                             : "Waiting for admin to generate bracket."}
                     </div>
                 </Card>
             ) : (
                 <>
+                    <Section title="Super 16">{s16s.map((id) => renderMatch(id))}</Section>
                     <Section title="Quarterfinals">{qfs.map((id) => renderMatch(id))}</Section>
                     <Section title="Semifinals">{sfs.map((id) => renderMatch(id))}</Section>
                     <Section title="Finals">{finals.map((id) => renderMatch(id))}</Section>

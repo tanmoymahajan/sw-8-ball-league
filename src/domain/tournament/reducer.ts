@@ -4,7 +4,6 @@ import type { StageId, SeriesMatch } from "../knockout/types";
 import { buildKnockoutBracket } from "../knockout/bracket";
 import {
     canAddFrame,
-    canSetTiebreak,
     computeSeriesWinner,
     isValidRemaining,
 } from "../knockout/series";
@@ -14,7 +13,7 @@ function uid(prefix: string): string {
 }
 
 function isGroupStageComplete(matches: GroupMatch[]): boolean {
-    return matches.length > 0 && matches.every((m) => m.completed === true);
+    return matches.length > 0 && matches.every((m) => m.completed);
 }
 
 function recomputeWinners(knockout: SeriesMatch[]): SeriesMatch[] {
@@ -134,12 +133,7 @@ export function tournamentReducer(state: TournamentState, action: TournamentActi
                 ];
 
                 // If QF changed frames and no longer tied 1–1 after two, clear spot-shot winner
-                const next: SeriesMatch = { ...m, frames: nextFrames };
-                if (next.format === "bo2_tb" && !canSetTiebreak(next.format, next.frames)) {
-                    next.tiebreakWinnerId = null;
-                }
-
-                return next;
+                return { ...m, frames: nextFrames };
             });
 
             return { ...state, knockout: recomputeWinners(ko) };
@@ -153,12 +147,7 @@ export function tournamentReducer(state: TournamentState, action: TournamentActi
                 const nextFrames = m.frames.slice();
                 nextFrames.splice(action.frameIndex, 1);
 
-                const next: SeriesMatch = { ...m, frames: nextFrames };
-                if (next.format === "bo2_tb" && !canSetTiebreak(next.format, next.frames)) {
-                    next.tiebreakWinnerId = null;
-                }
-
-                return next;
+                return { ...m, frames: nextFrames };
             });
 
             return { ...state, knockout: recomputeWinners(ko) };
@@ -169,24 +158,6 @@ export function tournamentReducer(state: TournamentState, action: TournamentActi
                 m.id === action.matchId
                     ? { ...m, frames: [], tiebreakWinnerId: null, winnerId: null }
                     : m
-            );
-
-            return { ...state, knockout: recomputeWinners(ko) };
-        }
-
-        case "knockout/setTiebreakWinner": {
-            const ko = state.knockout.map((m) => {
-                if (m.id !== action.matchId) return m;
-                if (!canSetTiebreak(m.format, m.frames)) return m;
-                return { ...m, tiebreakWinnerId: action.winnerId };
-            });
-
-            return { ...state, knockout: recomputeWinners(ko) };
-        }
-
-        case "knockout/clearTiebreak": {
-            const ko = state.knockout.map((m) =>
-                m.id === action.matchId ? { ...m, tiebreakWinnerId: null } : m
             );
 
             return { ...state, knockout: recomputeWinners(ko) };

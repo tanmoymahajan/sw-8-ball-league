@@ -1,4 +1,8 @@
-export type StageId = "QF1" | "QF2" | "QF3" | "QF4" | "SF1" | "SF2" | "THIRD" | "FINAL";
+export type StageId = 
+  | "S16M1" | "S16M2" | "S16M3" | "S16M4" | "S16M5" | "S16M6" | "S16M7" | "S16M8"
+  | "QF1" | "QF2" | "QF3" | "QF4" 
+  | "SF1" | "SF2" 
+  | "THIRD" | "FINAL";
 
 export type SeriesFormat = "bo2_tb" | "bo3";
 
@@ -20,7 +24,7 @@ export type SeriesMatch = {
   slotA: SeriesSlot;
   slotB: SeriesSlot;
 
-  frames: FrameResult[];         // QF: max 2, BO3: max 3
-  tiebreakWinnerId: string | null; // NEW: only used for QF when frames are 1–1
+  frames: FrameResult[];         // bo3: max 3
+  tiebreakWinnerId: string | null; // not used anymore (all bo3 now)
   winnerId: string | null;       // computed
 };
