@@ -4,7 +4,7 @@ export type StageId =
   | "SF1" | "SF2" 
   | "THIRD" | "FINAL";
 
-export type SeriesFormat = "bo2_tb" | "bo3";
+export type SeriesFormat = "bo2_tb" | "bo3" | "bo5";
 
 export type FrameResult = {
   winnerId: string;
@@ -25,6 +25,5 @@ export type SeriesMatch = {
   slotB: SeriesSlot;
 
   frames: FrameResult[];         // bo3: max 3
-  tiebreakWinnerId: string | null; // not used anymore (all bo3 now)
   winnerId: string | null;       // computed
 };

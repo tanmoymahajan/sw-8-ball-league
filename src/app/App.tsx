@@ -16,15 +16,7 @@ function AppInner() {
 
     return (
         <div className="page">
-            <Header
-                onReset={() => {
-                    const ok = confirm("Reset the entire tournament? This will erase all scores.");
-                    if (!ok) return;
-                    dispatch({ type: "tournament/reset", next: buildDefaultTournamentState() });
-                    setActiveGroup("A");
-                    setView("groups");
-                }}
-            />
+            <Header/>
 
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
                 <button

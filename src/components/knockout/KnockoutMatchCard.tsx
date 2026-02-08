@@ -4,7 +4,7 @@ import { Card } from "../layout/Card";
 import { isSplitAfterTwo } from "../../domain/knockout/series";
 
 function formatLabel(m: SeriesMatch): string {
-    return m.format === "bo2_tb" ? "QF • BO2 + Spot-shot" : "BO3";
+    return m.format === "bo3" ? "BO3" : "BO5";
 }
 
 function framesSummary(m: SeriesMatch): string {
@@ -27,17 +27,9 @@ export function KnockoutMatchCard({
     isAdmin: boolean;
     onOpen: () => void;
 }) {
-    const isQF = match.format === "bo2_tb";
-    const splitAfterTwo = isQF && match.frames.length >= 2 && isSplitAfterTwo(match.frames.slice(0, 2));
 
     const right = winnerName ? (
         <span className="badge">Winner: {winnerName}</span>
-    ) : splitAfterTwo ? (
-        match.tiebreakWinnerId ? (
-            <span className="badge">Spot-shot set</span>
-        ) : (
-            <span className="badge">Spot-shot pending</span>
-        )
     ) : (
         <span className="muted">{formatLabel(match)}</span>
     );
@@ -50,18 +42,6 @@ export function KnockoutMatchCard({
                 </div>
                 <div className="muted">{framesSummary(match)}</div>
             </div>
-
-            {splitAfterTwo && !winnerName ? (
-                <div className="muted" style={{ marginTop: 8 }}>
-                    Tied 1–1 after 2 frames. Decide with spot-shot.
-                </div>
-            ) : null}
-
-            {isQF && match.tiebreakWinnerId && !winnerName ? (
-                <div className="muted" style={{ marginTop: 8 }}>
-                    Spot-shot winner selected (winner should appear once state recomputes).
-                </div>
-            ) : null}
 
             <div style={{ marginTop: 10 }}>
                 <button

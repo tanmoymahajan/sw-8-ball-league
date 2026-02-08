@@ -16,10 +16,6 @@ type FrameValidation =
     | { ok: true; winnerId: string; loserRemaining: number }
     | { ok: false; msg: string };
 
-type SpotValidation =
-    | { ok: true; winnerId: string }
-    | { ok: false; msg: string };
-
 export function SeriesEditorModal({
                                       match,
                                       participants,
@@ -53,32 +49,17 @@ export function SeriesEditorModal({
     const [frameWinnerId, setFrameWinnerId] = useState<string>(() => aId ?? bId ?? "");
     const [remainingText, setRemainingText] = useState<string>("");
 
-    // Spot-shot input state (QF tiebreak)
-    const [spotWinnerId, setSpotWinnerId] = useState<string>(() => aId ?? bId ?? "");
-
-    const isQF = match.format === "bo2_tb";
-    const afterTwoSplit =
-        isQF && match.frames.length >= 2 && isSplitAfterTwo(match.frames.slice(0, 2));
-    const needsSpotShot = afterTwoSplit; // by rule, QF tiebreak is spot-shot
-
-    const seriesWinnerId = computeSeriesWinner(match.format, match.frames, match.tiebreakWinnerId);
+    const seriesWinnerId = computeSeriesWinner(match.format, match.frames);
     const seriesWinnerName = seriesWinnerId ? pById.get(seriesWinnerId)?.name ?? "Winner" : null;
 
     const canAdd = useMemo(() => {
         if (!canEdit) return false;
-        return canAddFrame(match.format, match.frames, match.tiebreakWinnerId);
-    }, [canEdit, match.format, match.frames, match.tiebreakWinnerId]);
+        return canAddFrame(match.format, match.frames);
+    }, [canEdit, match.format, match.frames]);
 
     const frameValidation: FrameValidation = useMemo(() => {
         if (!canEdit || !aId || !bId) {
             return { ok: false, msg: "Participants not decided yet (finish earlier matches first)." };
-        }
-
-        if (!canAdd) {
-            if (isQF && needsSpotShot) {
-                return { ok: false, msg: "QF tied 1–1. Decide spot-shot winner (no extra frame)." };
-            }
-            return { ok: false, msg: "No more frames allowed for this match." };
         }
 
         const w = frameWinnerId.trim();
@@ -91,20 +72,7 @@ export function SeriesEditorModal({
         }
 
         return { ok: true, winnerId: w, loserRemaining: n };
-    }, [canEdit, aId, bId, canAdd, isQF, needsSpotShot, frameWinnerId, remainingText]);
-
-    const spotValidation: SpotValidation = useMemo(() => {
-        if (!canEdit || !aId || !bId) {
-            return { ok: false, msg: "Participants not decided yet." };
-        }
-        if (!needsSpotShot) return { ok: false, msg: "Spot-shot not required." };
-
-        const w = spotWinnerId.trim();
-        if (!w) return { ok: false, msg: "Select spot-shot winner." };
-        if (w !== aId && w !== bId) return { ok: false, msg: "Spot-shot winner must be one of the participants." };
-
-        return { ok: true, winnerId: w };
-    }, [canEdit, aId, bId, needsSpotShot, spotWinnerId]);
+    }, [canEdit, aId, bId, canAdd, frameWinnerId, remainingText]);
 
     const loserNameForFrame = (winner: string) => {
         if (!aId || !bId) return "Opponent";
@@ -130,7 +98,6 @@ export function SeriesEditorModal({
                             onAddFrame(frameValidation.winnerId, frameValidation.loserRemaining);
                             setRemainingText("");
                         }}
-                        title={!canAdd && isQF ? "QF allows only 2 frames. Use spot-shot if tied 1–1." : undefined}
                     >
                         Add Frame
                     </button>
@@ -235,69 +202,6 @@ export function SeriesEditorModal({
                     </div>
                 )}
             </div>
-
-            {/* Spot-shot tiebreaker (QF only, when tied 1-1 after two frames) */}
-            {needsSpotShot ? (
-                <div style={{ marginTop: 16 }}>
-                    <div style={{ fontWeight: 900, marginBottom: 8 }}>Spot-shot tiebreaker</div>
-
-                    <div className="modalHint">
-                        QF is tied 1–1 after 2 frames. Select the spot-shot winner (no extra frame).
-                    </div>
-
-                    <div style={{ display: "grid", gap: 8, marginTop: 10, opacity: canEdit ? 1 : 0.6 }}>
-                        <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                            <input
-                                type="radio"
-                                name={`spot_${match.id}`}
-                                checked={aId ? spotWinnerId === aId : false}
-                                onChange={() => aId && setSpotWinnerId(aId)}
-                                disabled={!canEdit}
-                            />
-                            <span>{aName}</span>
-                        </label>
-
-                        <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                            <input
-                                type="radio"
-                                name={`spot_${match.id}`}
-                                checked={bId ? spotWinnerId === bId : false}
-                                onChange={() => bId && setSpotWinnerId(bId)}
-                                disabled={!canEdit}
-                            />
-                            <span>{bName}</span>
-                        </label>
-
-                        <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
-                            <button
-                                className="primaryBtn"
-                                type="button"
-                                disabled={!spotValidation.ok}
-                                onClick={() => {
-                                    if (!spotValidation.ok) return;
-                                    onSetTiebreakWinner(spotValidation.winnerId);
-                                    onClose();
-                                }}
-                            >
-                                Save Spot-shot Winner
-                            </button>
-
-                            <button className="secondaryBtn" type="button" onClick={onClearTiebreak}>
-                                Clear Spot-shot
-                            </button>
-                        </div>
-
-                        {!spotValidation.ok ? <div className="errorText">{spotValidation.msg}</div> : null}
-
-                        {match.tiebreakWinnerId ? (
-                            <div className="modalHint">
-                                Current spot-shot winner:{" "}
-                                <b>{pById.get(match.tiebreakWinnerId)?.name ?? "Winner"}</b>
-                            </div>
-                        ) : null}
-                    </div>
-                </div>
-            ) : null}
         </Modal>
     );
 }

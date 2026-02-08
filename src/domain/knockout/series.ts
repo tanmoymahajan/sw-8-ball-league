@@ -1,5 +1,5 @@
 // src/domain/knockout/series.ts
-import type { FrameResult } from "./types";
+import type {FrameResult, SeriesFormat} from "./types";
 
 export function isValidRemaining(n: number): boolean {
   return Number.isInteger(n) && n >= 0 && n <= 7;
@@ -12,16 +12,18 @@ export function computeFrameWins(frames: FrameResult[]): Map<string, number> {
 }
 
 export function computeSeriesWinner(
-  frames: FrameResult[],
+  format: SeriesFormat, frames: FrameResult[],
 ): string | null {
   // All matches are now Best of 3
   const wins = computeFrameWins(frames);
-  for (const [pid, w] of wins.entries()) if (w >= 2) return pid;
+  for (const [pid, w] of wins.entries()) if ((w >= 2 && format == "bo3") || (w >= 3 && format == "bo5")) return pid;
   return null;
 }
 
-export function maxFramesFor(): number {
-  return 3; // All matches are Best of 3
+export function maxFramesFor(format: SeriesFormat): number {
+  if (format === "bo3") return 3;// All matches are Best of 3
+    if (format === "bo5") return 5;
+    else return 1;
 }
 
 export function isSplitAfterTwo(frames: FrameResult[]): boolean {
@@ -32,8 +34,6 @@ export function isSplitAfterTwo(frames: FrameResult[]): boolean {
   return values.includes(1) && values.reduce((a, b) => a + b, 0) === 2;
 }
 
-export function canAddFrame(frames: FrameResult[]): boolean {
-  if (frames.length >= maxFramesFor()) return false;
-  // All matches are Best of 3, so always allow up to 3 frames
-  return true;
+export function canAddFrame(format: SeriesFormat, frames: FrameResult[]): boolean {
+  return frames.length < maxFramesFor(format);
 }

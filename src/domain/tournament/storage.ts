@@ -12,11 +12,3 @@ export function loadTournamentState(): TournamentState | null {
         return null;
     }
 }
-
-export function saveTournamentState(state: TournamentState): void {
-    try {
-        localStorage.setItem(LS_KEY, JSON.stringify(state));
-    } catch {
-        // ignore quota errors
-    }
-}

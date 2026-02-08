@@ -85,8 +85,8 @@ export function KnockoutPage() {
                         <button
                             className="primaryBtn"
                             type="button"
-                            disabled={!groupsOver}
                             onClick={() => dispatch({ type: "knockout/initFromStandings" })}
+                            disabled={true}
                             title={
                                 groupsOver
                                     ? "Build bracket from final group standings"

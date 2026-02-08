@@ -13,7 +13,6 @@ export const PARTICIPANTS: Record<GroupId, string[]> = {
         "Keshav"
     ],
     B: [
-        "Pratik Raj",
         "Vividh",
         "Tulsidas Chaulwar",
         "Showbhik Lahiri",

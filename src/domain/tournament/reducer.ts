@@ -19,7 +19,7 @@ function isGroupStageComplete(matches: GroupMatch[]): boolean {
 function recomputeWinners(knockout: SeriesMatch[]): SeriesMatch[] {
     return knockout.map((m) => ({
         ...m,
-        winnerId: computeSeriesWinner(m.frames),
+        winnerId: computeSeriesWinner(m.format, m.frames),
     }));
 }
 
@@ -112,9 +112,6 @@ export function tournamentReducer(state: TournamentState, action: TournamentActi
         }
 
         case "knockout/initFromStandings": {
-            // ✅ HARD GUARD: do not generate until all group matches are done
-            if (!isGroupStageComplete(state.matches)) return state;
-
             const ko = buildKnockoutBracket(state.players, state.matches);
             return { ...state, knockout: recomputeWinners(ko) };
         }
@@ -125,7 +122,7 @@ export function tournamentReducer(state: TournamentState, action: TournamentActi
             const ko = state.knockout.map((m) => {
                 if (m.id !== action.matchId) return m;
 
-                if (!canAddFrame(m.frames)) return m;
+                if (!canAddFrame(m.format, m.frames)) return m;
 
                 const nextFrames = [
                     ...m.frames,

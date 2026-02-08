@@ -74,8 +74,7 @@ export function buildKnockoutBracket(
             slotA: { kind: "player", playerId: safe(A, "first") },
             slotB: { kind: "player", playerId: safe(B, "fourth") },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
         {
             id: "S16M2",
@@ -84,8 +83,7 @@ export function buildKnockoutBracket(
             slotA: { kind: "player", playerId: safe(A, "second") },
             slotB: { kind: "player", playerId: safe(B, "third") },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
         {
             id: "S16M3",
@@ -94,8 +92,7 @@ export function buildKnockoutBracket(
             slotA: { kind: "player", playerId: safe(A, "third") },
             slotB: { kind: "player", playerId: safe(B, "second") },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
         {
             id: "S16M4",
@@ -104,8 +101,7 @@ export function buildKnockoutBracket(
             slotA: { kind: "player", playerId: safe(A, "fourth") },
             slotB: { kind: "player", playerId: safe(B, "first") },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
         {
             id: "S16M5",
@@ -114,8 +110,7 @@ export function buildKnockoutBracket(
             slotA: { kind: "player", playerId: safe(C, "first") },
             slotB: { kind: "player", playerId: safe(D, "fourth") },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
         {
             id: "S16M6",
@@ -124,8 +119,7 @@ export function buildKnockoutBracket(
             slotA: { kind: "player", playerId: safe(C, "second") },
             slotB: { kind: "player", playerId: safe(D, "third") },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
         {
             id: "S16M7",
@@ -134,8 +128,7 @@ export function buildKnockoutBracket(
             slotA: { kind: "player", playerId: safe(C, "third") },
             slotB: { kind: "player", playerId: safe(D, "second") },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
         {
             id: "S16M8",
@@ -144,8 +137,7 @@ export function buildKnockoutBracket(
             slotA: { kind: "player", playerId: safe(C, "fourth") },
             slotB: { kind: "player", playerId: safe(D, "first") },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
 
         // QUARTER-FINALS
@@ -156,8 +148,7 @@ export function buildKnockoutBracket(
             slotA: { kind: "winnerOf", matchId: "S16M1" },
             slotB: { kind: "winnerOf", matchId: "S16M8" },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
         {
             id: "QF2",
@@ -166,8 +157,7 @@ export function buildKnockoutBracket(
             slotA: { kind: "winnerOf", matchId: "S16M2" },
             slotB: { kind: "winnerOf", matchId: "S16M7" },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
         {
             id: "QF3",
@@ -176,8 +166,7 @@ export function buildKnockoutBracket(
             slotA: { kind: "winnerOf", matchId: "S16M3" },
             slotB: { kind: "winnerOf", matchId: "S16M6" },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
         {
             id: "QF4",
@@ -186,54 +175,49 @@ export function buildKnockoutBracket(
             slotA: { kind: "winnerOf", matchId: "S16M4" },
             slotB: { kind: "winnerOf", matchId: "S16M5" },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
 
         // SEMI-FINALS
         {
             id: "SF1",
             label: "SF1: W(QF1) vs W(QF4)",
-            format: "bo3",
+            format: "bo5",
             slotA: { kind: "winnerOf", matchId: "QF1" },
             slotB: { kind: "winnerOf", matchId: "QF4" },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
         {
             id: "SF2",
             label: "SF2: W(QF2) vs W(QF3)",
-            format: "bo3",
+            format: "bo5",
             slotA: { kind: "winnerOf", matchId: "QF2" },
             slotB: { kind: "winnerOf", matchId: "QF3" },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
 
         // 3RD PLACE
         {
             id: "THIRD",
             label: "3rd Place: L(SF1) vs L(SF2)",
-            format: "bo3",
+            format: "bo5",
             slotA: { kind: "loserOf", matchId: "SF1" },
             slotB: { kind: "loserOf", matchId: "SF2" },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
 
         // FINAL
         {
             id: "FINAL",
             label: "Final: W(SF1) vs W(SF2)",
-            format: "bo3",
+            format: "bo5",
             slotA: { kind: "winnerOf", matchId: "SF1" },
             slotB: { kind: "winnerOf", matchId: "SF2" },
             frames: [],
-            winnerId: null,
-            tiebreakWinnerId: null,
+            winnerId: null
         },
     ];
 }
