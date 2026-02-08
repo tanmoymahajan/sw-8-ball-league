@@ -66,7 +66,7 @@ export function computeStandings(players: Player[], matches: Match[], group: Gro
         if (b.ballDiff !== a.ballDiff) return b.ballDiff - a.ballDiff;
 
         if (b.ballsFor !== a.ballsFor) return b.ballsFor - a.ballsFor;
-        return a.name.localeCompare(b.name);
+        return b.name.localeCompare(a.name);
     });
 
     return list;
