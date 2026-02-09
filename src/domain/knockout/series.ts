@@ -26,14 +26,6 @@ export function maxFramesFor(format: SeriesFormat): number {
     else return 1;
 }
 
-export function isSplitAfterTwo(frames: FrameResult[]): boolean {
-  // Not used anymore, but kept for backwards compatibility
-  if (frames.length < 2) return false;
-  const wins2 = computeFrameWins(frames.slice(0, 2));
-  const values = Array.from(wins2.values());
-  return values.includes(1) && values.reduce((a, b) => a + b, 0) === 2;
-}
-
 export function canAddFrame(format: SeriesFormat, frames: FrameResult[]): boolean {
   return frames.length < maxFramesFor(format);
 }

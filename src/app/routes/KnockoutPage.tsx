@@ -66,10 +66,11 @@ export function KnockoutPage() {
                 match={m}
                 aName={aName}
                 bName={bName}
+                aId={rp?.aId ?? null}
+                bId={rp?.bId ?? null}
                 winnerName={winnerName}
                 isAdmin={isAdmin}
                 onOpen={() => {
-                    if (!isAdmin) return;
                     setEditing(m.id);
                 }}
             />
@@ -127,11 +128,12 @@ export function KnockoutPage() {
                 </>
             )}
 
-            {isAdmin && editingMatch ? (
+            {editingMatch ? (
                 <SeriesEditorModal
                     match={editingMatch}
                     participants={resolved.get(editingMatch.id) ?? { aId: null, bId: null }}
                     pById={pById}
+                    isAdmin={isAdmin}
                     onClose={() => setEditing(null)}
                     onAddFrame={(winnerId, loserRemaining) =>
                         dispatch({ type: "knockout/addFrame", matchId: editingMatch.id, winnerId, loserRemaining })
@@ -140,10 +142,6 @@ export function KnockoutPage() {
                         dispatch({ type: "knockout/removeFrame", matchId: editingMatch.id, frameIndex: idx })
                     }
                     onClear={() => dispatch({ type: "knockout/clearMatch", matchId: editingMatch.id })}
-                    onSetTiebreakWinner={(winnerId) =>
-                        dispatch({ type: "knockout/setTiebreakWinner", matchId: editingMatch.id, winnerId })
-                    }
-                    onClearTiebreak={() => dispatch({ type: "knockout/clearTiebreak", matchId: editingMatch.id })}
                 />
             ) : null}
         </div>

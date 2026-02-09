@@ -1,19 +1,11 @@
 // src/domain/tournament/reducer.ts
-import type { TournamentState, Match as GroupMatch } from "./types";
-import type { StageId, SeriesMatch } from "../knockout/types";
-import { buildKnockoutBracket } from "../knockout/bracket";
-import {
-    canAddFrame,
-    computeSeriesWinner,
-    isValidRemaining,
-} from "../knockout/series";
+import type {TournamentState} from "./types";
+import type {SeriesMatch, StageId} from "../knockout/types";
+import {buildKnockoutBracket} from "../knockout/bracket";
+import {canAddFrame, computeSeriesWinner, isValidRemaining,} from "../knockout/series";
 
 function uid(prefix: string): string {
     return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
-}
-
-function isGroupStageComplete(matches: GroupMatch[]): boolean {
-    return matches.length > 0 && matches.every((m) => m.completed);
 }
 
 function recomputeWinners(knockout: SeriesMatch[]): SeriesMatch[] {
@@ -153,7 +145,7 @@ export function tournamentReducer(state: TournamentState, action: TournamentActi
         case "knockout/clearMatch": {
             const ko = state.knockout.map((m) =>
                 m.id === action.matchId
-                    ? { ...m, frames: [], tiebreakWinnerId: null, winnerId: null }
+                    ? { ...m, frames: [], winnerId: null }
                     : m
             );
 

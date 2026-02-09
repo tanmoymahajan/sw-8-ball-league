@@ -6,7 +6,6 @@ import { Modal } from "../layout/Modal";
 import {
     canAddFrame,
     computeSeriesWinner,
-    isSplitAfterTwo,
     isValidRemaining,
 } from "../../domain/knockout/series";
 
@@ -24,8 +23,7 @@ export function SeriesEditorModal({
                                       onAddFrame,
                                       onRemoveFrame,
                                       onClear,
-                                      onSetTiebreakWinner,
-                                      onClearTiebreak,
+                                      isAdmin = true,
                                   }: {
     match: SeriesMatch;
     participants: Participants;
@@ -34,13 +32,12 @@ export function SeriesEditorModal({
     onAddFrame: (winnerId: string, loserRemaining: number) => void;
     onRemoveFrame: (frameIndex: number) => void;
     onClear: () => void;
-    onSetTiebreakWinner: (winnerId: string) => void;
-    onClearTiebreak: () => void;
+    isAdmin?: boolean;
 }) {
     const aId = participants.aId;
     const bId = participants.bId;
 
-    const canEdit = Boolean(aId && bId);
+    const canEdit = Boolean(aId && bId) && isAdmin;
 
     const aName = aId ? pById.get(aId)?.name ?? "TBD" : "TBD";
     const bName = bId ? pById.get(bId)?.name ?? "TBD" : "TBD";
@@ -84,24 +81,26 @@ export function SeriesEditorModal({
             title={`${match.id} • ${aName} vs ${bName}`}
             onClose={onClose}
             footer={
-                <>
-                    <button className="secondaryBtn" type="button" onClick={onClear}>
-                        Clear Match
-                    </button>
+                isAdmin ? (
+                    <>
+                        <button className="secondaryBtn" type="button" onClick={onClear}>
+                            Clear Match
+                        </button>
 
-                    <button
-                        className="primaryBtn"
-                        type="button"
-                        disabled={!frameValidation.ok}
-                        onClick={() => {
-                            if (!frameValidation.ok) return;
-                            onAddFrame(frameValidation.winnerId, frameValidation.loserRemaining);
-                            setRemainingText("");
-                        }}
-                    >
-                        Add Frame
-                    </button>
-                </>
+                        <button
+                            className="primaryBtn"
+                            type="button"
+                            disabled={!frameValidation.ok}
+                            onClick={() => {
+                                if (!frameValidation.ok) return;
+                                onAddFrame(frameValidation.winnerId, frameValidation.loserRemaining);
+                                setRemainingText("");
+                            }}
+                        >
+                            Add Frame
+                        </button>
+                    </>
+                ) : undefined
             }
         >
             <div className="modalHint">
@@ -112,53 +111,55 @@ export function SeriesEditorModal({
                 {seriesWinnerName ? ` Winner decided: ${seriesWinnerName}.` : ""}
             </div>
 
-            {!canEdit ? (
+            {!aId || !bId ? (
                 <div className="errorText">Participants TBD — complete earlier matches first.</div>
             ) : null}
 
-            <div style={{ display: "grid", gap: 10, marginTop: 12, opacity: canEdit ? 1 : 0.6 }}>
-                <div className="formRow">
-                    <label className="label">Frame winner</label>
+            {isAdmin ? (
+                <div style={{ display: "grid", gap: 10, marginTop: 12, opacity: canEdit ? 1 : 0.6 }}>
+                    <div className="formRow">
+                        <label className="label">Frame winner</label>
 
-                    <div style={{ display: "grid", gap: 8 }}>
-                        <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                            <input
-                                type="radio"
-                                name={`frame_winner_${match.id}`}
-                                checked={aId ? frameWinnerId === aId : false}
-                                onChange={() => aId && setFrameWinnerId(aId)}
-                                disabled={!canEdit}
-                            />
-                            <span>{aName}</span>
-                        </label>
+                        <div style={{ display: "grid", gap: 8 }}>
+                            <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                                <input
+                                    type="radio"
+                                    name={`frame_winner_${match.id}`}
+                                    checked={aId ? frameWinnerId === aId : false}
+                                    onChange={() => aId && setFrameWinnerId(aId)}
+                                    disabled={!canEdit}
+                                />
+                                <span>{aName}</span>
+                            </label>
 
-                        <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                            <input
-                                type="radio"
-                                name={`frame_winner_${match.id}`}
-                                checked={bId ? frameWinnerId === bId : false}
-                                onChange={() => bId && setFrameWinnerId(bId)}
-                                disabled={!canEdit}
-                            />
-                            <span>{bName}</span>
-                        </label>
+                            <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                                <input
+                                    type="radio"
+                                    name={`frame_winner_${match.id}`}
+                                    checked={bId ? frameWinnerId === bId : false}
+                                    onChange={() => bId && setFrameWinnerId(bId)}
+                                    disabled={!canEdit}
+                                />
+                                <span>{bName}</span>
+                            </label>
+                        </div>
                     </div>
-                </div>
 
-                <div className="formRow">
-                    <label className="label">Opponent balls remaining (0–7)</label>
-                    <input
-                        className="scoreInput"
-                        inputMode="numeric"
-                        value={remainingText}
-                        onChange={(e) => setRemainingText(e.target.value)}
-                        placeholder="0 to 7"
-                        disabled={!canEdit}
-                    />
-                </div>
+                    <div className="formRow">
+                        <label className="label">Opponent balls remaining (0–7)</label>
+                        <input
+                            className="scoreInput"
+                            inputMode="numeric"
+                            value={remainingText}
+                            onChange={(e) => setRemainingText(e.target.value)}
+                            placeholder="0 to 7"
+                            disabled={!canEdit}
+                        />
+                    </div>
 
-                {!frameValidation.ok ? <div className="errorText">{frameValidation.msg}</div> : null}
-            </div>
+                    {!frameValidation.ok ? <div className="errorText">{frameValidation.msg}</div> : null}
+                </div>
+            ) : null}
 
             {/* Frames list */}
             <div style={{ marginTop: 14 }}>
@@ -190,12 +191,14 @@ export function SeriesEditorModal({
                                         <div style={{ fontWeight: 900 }}>
                                             Frame {idx + 1}: {wName} won
                                         </div>
-                                        <div className="muted">{loserName} remaining: {f.loserRemaining}</div>
+                                        <div className="muted">{loserName}'s balls left on table: {f.loserRemaining}</div>
                                     </div>
 
-                                    <button className="dangerBtn" type="button" onClick={() => onRemoveFrame(idx)}>
-                                        Remove
-                                    </button>
+                                    {isAdmin ? (
+                                        <button className="dangerBtn" type="button" onClick={() => onRemoveFrame(idx)}>
+                                            Remove
+                                        </button>
+                                    ) : null}
                                 </div>
                             );
                         })}

@@ -1,18 +1,16 @@
-import React, { useState } from "react";
-import type { GroupId } from "../domain/tournament/types";
-import { GroupTabs } from "../components/layout/Tabs";
-import { Header } from "../components/layout/Header";
-import { GroupPage } from "./routes/GroupPage";
-import { KnockoutPage } from "./routes/KnockoutPage";
-import { buildDefaultTournamentState } from "../domain/tournament/schedule";
-import {TournamentProvider, useTournament} from "./providers/TournamentProvider";
+import React, {useState} from "react";
+import type {GroupId} from "../domain/tournament/types";
+import {GroupTabs} from "../components/layout/Tabs";
+import {Header} from "../components/layout/Header";
+import {GroupPage} from "./routes/GroupPage";
+import {KnockoutPage} from "./routes/KnockoutPage";
+import {TournamentProvider} from "./providers/TournamentProvider";
 import {AdminProvider} from "./providers/AdminProvider";
 
 
 function AppInner() {
     const [activeGroup, setActiveGroup] = useState<GroupId>("A");
-    const [view, setView] = useState<"groups" | "knockouts">("groups");
-    const { dispatch } = useTournament();
+    const [view, setView] = useState<"groups" | "knockouts">("knockouts");
 
     return (
         <div className="page">
